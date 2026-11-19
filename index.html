@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>liveclipper - turn streams into vertical clips, on your own computer</title>
+<meta name="description" content="liveclipper v7: open-source clipper for Twitch and YouTube streams. Download it and run it on your own computer.">
+<style>
+:root{--bg:#0d0e12;--card:#16181f;--line:#2a2d38;--text:#eceef4;--muted:#9aa0b0;--y:#ffd400}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+a{color:var(--y)}.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+h1{font-size:40px;margin:48px 0 8px}h1 b{color:var(--y)}h2{margin:48px 0 12px;font-size:26px}
+.lead{color:var(--muted);font-size:19px;max-width:700px}
+.btn{display:inline-block;background:var(--y);color:#111;font-weight:700;padding:12px 20px;border-radius:8px;text-decoration:none;margin:16px 12px 0 0}
+.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line)}
+.notice{background:#1f1a08;border:1px solid #5a4a10;border-radius:10px;padding:16px 18px;margin:28px 0}
+.notice b{color:var(--y)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:var(--muted);font-size:15px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow:auto;font-size:14px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+figure{margin:18px 0}figure img{width:100%;border:1px solid var(--line);border-radius:10px}figcaption{color:var(--muted);font-size:14px;margin-top:6px}
+footer{margin:60px 0 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line);padding-top:18px}
+.tag{color:var(--muted);font-size:14px}
+</style></head><body><div class="wrap">
+<h1>live<b>clipper</b></h1>
+<p class="lead">Open-source tool that watches Twitch and YouTube streams, cuts the best moments into vertical 9:16 clips, and puts them in a review queue. You approve each clip yourself.</p>
+<a class="btn" href="liveclipper-v7.zip">Download v7 (ZIP, 65 KB)</a><a class="btn alt" href="https://github.com/ujjwalbhatiaa/Liveclip">Source on GitHub</a>
+
+<div class="notice"><b>This website is only the tool's home page. liveclipper does not run here.</b>
+It is a program you download and run on your own computer (Mac, Windows or Linux with Python, ffmpeg and yt-dlp). Your computer does the recording, clipping and rendering, and its control panel opens at <code>http://127.0.0.1:8765</code> on that same computer. Nothing on this page can capture a stream, and there is no hosted version or account.</div>
+
+<h2>What it does</h2>
+<div class="grid">
+<div class="card"><h3>Channel autopilot</h3><p>Add a channel once. The watcher checks every minute, starts clipping when it goes live and stops when it ends.</p></div>
+<div class="card"><h3>Chat and audio triggers</h3><p>Cuts a clip when chat spikes or the stream gets loud. Rendered as 9:16 with captions, hook text, watermark and thumbnail.</p></div>
+<div class="card"><h3>Scored VOD clipping</h3><p>Point it at a Twitch VOD or a local video. It ranks moments 0-100 (hook, flow, value, trend) from the transcript, loudness and scene cuts. No AI model, plain arithmetic.</p></div>
+<div class="card"><h3>Stacked layout</h3><p>Gameplay on top, webcam below. Webcam detection is a simple heuristic, so check the first clip or give the webcam box with <code>--cam</code>.</p></div>
+<div class="card"><h3>Clip a video</h3><p>Paste a YouTube link, preview it, set start and end sliders and cut a clip. The download happens on your computer and only works where YouTube lets your computer fetch the video.</p></div>
+<div class="card"><h3>Review queue</h3><p>Every clip waits for your approve or reject. You can upload approved clips to your own YouTube channel by hand, or turn on autopilot (off by default, private uploads unless you choose otherwise, everything logged). Facebook Reels, Instagram Reels and TikTok uploads are built too, with setup steps in PLATFORMS.md.</p></div>
+</div>
+
+<h2>Screenshots (local control panel)</h2>
+<figure><img src="img/ui_channels.png" alt="Channels tab"><figcaption>Channels: add channels, start or stop the watcher (sample data shown).</figcaption></figure>
+<figure><img src="img/ui_review.png" alt="Review queue tab"><figcaption>Review queue: you decide on each clip (sample data shown).</figcaption></figure>
+<figure><img src="img/ui_manual.png" alt="Clip a video tab"><figcaption>Clip a video: paste a link, then trim.</figcaption></figure>
+
+<h2>Install and run</h2>
+<p class="tag">Needs Python 3.10+, ffmpeg. Steps shown for Mac; on Windows install the same tools with winget or their installers.</p>
+<pre><code>1. Download and unzip liveclipper-v7.zip, open a terminal in that folder
+2. brew install ffmpeg streamlink
+3. pip3 install -r requirements.txt
+4. python3 liveclipper.py --selftest --thumbnails --out test_clips   # offline test
+5. python3 liveclipper.py --check @somechannel   # checks that your computer can capture that source
+6. python3 webui.py     # then open http://127.0.0.1:8765 in your browser</code></pre>
+<p>Run step 5 before relying on it for a big stream. YouTube sometimes refuses automated access; if it does, the tool says so and stops rather than pretending to record.</p>
+
+<h2>What is proven and what is not</h2>
+<ul>
+<li>Tested with real public Twitch streams and VODs: finding the stream, recording, VOD scoring and 9:16 rendering.</li>
+<li>YouTube capture is not proven yet. It depends on your computer and network, which is why <code>--check</code> exists.</li>
+<li>Mac and Windows autostart files are included but untested on real machines.</li>
+<li>Uploading to YouTube, Facebook, Instagram and TikTok is tested only against fake or mocked APIs, not yet the real services. Each needs your own developer app and approvals.</li>
+</ul>
+
+<h2>Rights</h2>
+<p>Only clip and post content you own or have the creator's permission to use, and follow each platform's terms. Having a clip does not mean you may publish it.</p>
+
+<footer>MIT licensed. <a href="https://github.com/ujjwalbhatiaa/Liveclip/blob/main/LICENSE">License</a> - <a href="https://github.com/ujjwalbhatiaa/Liveclip">Repository</a> - <a href="classic.html">Original liveclip page</a></footer>
+</div></body></html>
