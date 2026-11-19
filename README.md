@@ -1,3 +1,8 @@
+> **New: liveclipper v7** lives in [`liveclipper/`](liveclipper/) - autopilot channel watch, Katto-style scored VOD clipping,
+> a local control panel and a YouTube trim box. Site: https://ujjwalbhatiaa.github.io/Liveclip/ . It runs on your own computer
+> only. The original `liveclip.py` below is unchanged. MIT licensed, see [LICENSE](LICENSE). Only clip content you have the
+> rights to use.
+
 # liveclip — clip a live Twitch or YouTube stream the moment chat explodes
 
 The clipping system from [that reel](https://www.instagram.com/reel/DfzXVKJIKou/)
